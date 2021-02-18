@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.DsCatalogClient.com.DsCatalogClient.Services.ClienteService;
-import com.DsCatalogClient.com.DsCatalogClient.entities.Client;
+import com.DsCatalogClient.com.DsCatalogClient.Services.ClientService;
+import com.DsCatalogClient.com.DsCatalogClient.dto.ClientDTO;
 
 @RestController
 @RequestMapping(value = "/clients")
@@ -18,11 +18,11 @@ public class ClientResource implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Autowired
-	private ClienteService service;
+	private ClientService service;
 	
 	@GetMapping
-	public ResponseEntity<List<Client>> findAll() {
-		List<Client> list = service.findAll();
+	public ResponseEntity<List<ClientDTO>> findAll() {
+		List<ClientDTO> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 
