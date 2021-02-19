@@ -61,11 +61,27 @@ public class ClientService implements Serializable{
 		catch (DataIntegrityViolationException e) {
 			throw new DataBaseException("Integrity Violation!!");
 		}
+	
+	}
+	
+	@Transactional
+	public ClientDTO update(Long id, ClientDTO dto) {
+		try {
+			Client entity = repository.getOne(id);
+			entity.setName(dto.getName());
+			entity.setBirthDate(dto.getBirthDate());
+			entity.setChildren(dto.getChildren());
+			entity.setIncome(dto.getIncome());
+			entity.setCpf(dto.getCpf());
+			entity = repository.save(entity);
+			return new ClientDTO(entity);
+		}
 		
-		
+		catch (EmptyResultDataAccessException e){
+			throw new EntityNotFoundException("ID Não Encontrado: " + id);
+		}			
 		
 	}
 	
 	
-
 }
