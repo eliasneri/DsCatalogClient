@@ -82,6 +82,24 @@ public class ClientService implements Serializable{
 		}			
 		
 	}
+
+	@Transactional
+	public ClientDTO insert(ClientDTO dto) {
+		Client entity = new Client();
+		entity.setName(dto.getName());
+		entity.setBirthDate(dto.getBirthDate());
+		entity.setChildren(dto.getChildren());
+		entity.setIncome(dto.getIncome());
+		entity.setCpf(dto.getCpf());
+		entity = repository.save(entity);
+		return new ClientDTO(entity);
+		
+	}
+
+	public List<ClientDTO> findAllReg() {
+		List<Client> list = repository.findAll();
+		return list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
+	}
 	
 	
 }
