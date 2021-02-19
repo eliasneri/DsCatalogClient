@@ -6,9 +6,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.DsCatalogClient.com.DsCatalogClient.Services.exceptions.DataBaseException;
 import com.DsCatalogClient.com.DsCatalogClient.Services.exceptions.EntityNotFoundException;
 import com.DsCatalogClient.com.DsCatalogClient.dto.ClientDTO;
 import com.DsCatalogClient.com.DsCatalogClient.entities.Client;
@@ -32,6 +37,33 @@ public class ClientService implements Serializable{
 		Optional<Client> obj = repository.findById(id);
 		Client entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity Not Found!"));
 		return new ClientDTO(entity);
+	}
+
+	
+	@Transactional(readOnly = true)
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Client> list = repository.findAll(pageRequest);
+		Page<ClientDTO> pageDTO = list.map(x -> new ClientDTO(x));
+		return pageDTO;
+		
+		
+	}
+
+	public void deleteId(Long id) {
+		try {
+		 repository.deleteById(id);
+		}
+		
+		catch (EmptyResultDataAccessException e){
+			throw new EntityNotFoundException("ID Não Encontrado: " + id);
+		}
+		
+		catch (DataIntegrityViolationException e) {
+			throw new DataBaseException("Integrity Violation!!");
+		}
+		
+		
+		
 	}
 	
 	
