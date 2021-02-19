@@ -52,6 +52,14 @@ GET /clients/1
 
 ```
 
+Busca total de clientes
+
+```bash
+
+GET /all
+
+```
+
 Inserção de novo cliente
 ```bash
 
