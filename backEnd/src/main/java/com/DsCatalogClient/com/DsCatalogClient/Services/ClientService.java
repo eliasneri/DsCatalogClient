@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.DsCatalogClient.com.DsCatalogClient.Services.exceptions.EntityNotFoundException;
 import com.DsCatalogClient.com.DsCatalogClient.dto.ClientDTO;
 import com.DsCatalogClient.com.DsCatalogClient.entities.Client;
 import com.DsCatalogClient.com.DsCatalogClient.repositories.ClientRepository;
@@ -29,7 +30,7 @@ public class ClientService implements Serializable{
 	@Transactional(readOnly = true)
 	public ClientDTO findById(Long id) {
 		Optional<Client> obj = repository.findById(id);
-		Client entity = obj.get();
+		Client entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity Not Found!"));
 		return new ClientDTO(entity);
 	}
 	
