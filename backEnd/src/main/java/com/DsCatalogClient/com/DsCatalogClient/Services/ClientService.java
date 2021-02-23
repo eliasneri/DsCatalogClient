@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.DsCatalogClient.com.DsCatalogClient.Services.exceptions.DataBaseException;
-import com.DsCatalogClient.com.DsCatalogClient.Services.exceptions.EntityNotFoundException;
+import com.DsCatalogClient.com.DsCatalogClient.Services.exceptions.ResourceNotFoundException;
 import com.DsCatalogClient.com.DsCatalogClient.dto.ClientDTO;
 import com.DsCatalogClient.com.DsCatalogClient.entities.Client;
 import com.DsCatalogClient.com.DsCatalogClient.repositories.ClientRepository;
@@ -35,7 +37,7 @@ public class ClientService implements Serializable{
 	@Transactional(readOnly = true)
 	public ClientDTO findById(Long id) {
 		Optional<Client> obj = repository.findById(id);
-		Client entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity Not Found!"));
+		Client entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity Not Found!"));
 		return new ClientDTO(entity);
 	}
 
@@ -55,7 +57,7 @@ public class ClientService implements Serializable{
 		}
 		
 		catch (EmptyResultDataAccessException e){
-			throw new EntityNotFoundException("ID Não Encontrado: " + id);
+			throw new ResourceNotFoundException("ID Não Encontrado: " + id);
 		}
 		
 		catch (DataIntegrityViolationException e) {
@@ -77,8 +79,8 @@ public class ClientService implements Serializable{
 			return new ClientDTO(entity);
 		}
 		
-		catch (EmptyResultDataAccessException e){
-			throw new EntityNotFoundException("ID Não Encontrado: " + id);
+		catch (EntityNotFoundException e){
+			throw new ResourceNotFoundException("ID Não Encontrado: " + id);
 		}			
 		
 	}
@@ -96,6 +98,7 @@ public class ClientService implements Serializable{
 		
 	}
 
+	@Transactional(readOnly = true)
 	public List<ClientDTO> findAllReg() {
 		List<Client> list = repository.findAll();
 		return list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
